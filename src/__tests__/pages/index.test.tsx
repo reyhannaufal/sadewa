@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+import { SessionProvider } from 'next-auth/react';
 
 import HomePage from '@/pages';
 
@@ -13,7 +14,11 @@ jest.mock('next/router', () => ({
 
 describe('Index Page', () => {
   it('renders index page', async () => {
-    const { container } = render(<HomePage />);
+    const { container } = render(
+      <SessionProvider>
+        <HomePage />
+      </SessionProvider>
+    );
 
     expect(container.firstChild?.hasChildNodes()).toBeTruthy();
   });
