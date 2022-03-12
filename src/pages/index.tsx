@@ -25,8 +25,7 @@ export default function HomePage() {
   }
   return (
     <Layout>
-      {/* <Seo templateTitle='Home' /> */}
-      <Seo />
+      <Seo templateTitle='Home' />
 
       <main>
         <section className='bg-white'>
