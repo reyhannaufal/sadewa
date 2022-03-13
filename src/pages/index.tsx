@@ -1,22 +1,26 @@
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { getSession, signIn, signOut, useSession } from 'next-auth/react';
 import * as React from 'react';
 
 import Layout from '@/components/layout/Layout';
 import NextImage from '@/components/NextImage';
 import Seo from '@/components/Seo';
 
+// Export the `session` prop to use sessions with Server Side Rendering
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function getServerSideProps(context: any) {
+  return {
+    props: {
+      session: await getSession(context),
+    },
+  };
+}
+
 export default function HomePage() {
-  const { data: session, status } = useSession();
-  if (status === 'loading') {
-    return (
-      <div className='mx-auto flex min-h-screen flex-col items-center justify-center'>
-        <Seo title='Home' />
-        <Layout>
-          <p>Loading..</p>
-        </Layout>
-      </div>
-    );
-  }
+  const { data: session } = useSession();
+
+  if (typeof window === 'undefined') return null;
+  // eslint-disable-next-line no-console
+  console.log('%cindex.tsx line:19 props', 'color: #007acc;', session);
   if (session) {
     return (
       <section className='mx-auto flex min-h-screen flex-col items-center justify-center'>
@@ -42,6 +46,7 @@ export default function HomePage() {
           <div className='layout flex min-h-screen flex-col items-center justify-center text-center'>
             Not signed in <br />
             <button onClick={() => signIn('google')}>Sign in</button>
+            {/* {JSON.stringify(session)} */}
           </div>
         </section>
       </main>
