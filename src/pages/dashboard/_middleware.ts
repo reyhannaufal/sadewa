@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { CookiesType, isDevelopment } from '@/utils/env';
 
-export default function middleware(req: NextRequest) {
+export default function middleware(req: NextRequest, _: NextResponse) {
   const cookieName = isDevelopment()
     ? CookiesType.DEVELOPMENT
     : CookiesType.PRODUCTION;
