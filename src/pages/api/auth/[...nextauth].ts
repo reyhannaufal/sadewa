@@ -4,11 +4,7 @@ import NextAuth from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 
-const prisma =
-  global.prisma ||
-  new PrismaClient({
-    // log: ['query', 'info', 'warn', 'error'],
-  });
+const prisma = global.prisma || new PrismaClient();
 
 if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
 
@@ -29,5 +25,8 @@ export default NextAuth({
       session.user.id = user.id;
       return Promise.resolve(session);
     },
+  },
+  pages: {
+    signIn: '/',
   },
 });

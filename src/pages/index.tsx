@@ -1,5 +1,4 @@
 import { NextPageContext } from 'next';
-import { useRouter } from 'next/router';
 import { getSession, signIn, signOut, useSession } from 'next-auth/react';
 import * as React from 'react';
 
@@ -17,15 +16,7 @@ export async function getServerSideProps(context: NextPageContext) {
 }
 
 export default function HomePage() {
-  const router = useRouter();
   const { data: session } = useSession();
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  React.useEffect(() => {
-    if (session) {
-      router.push('/dashboard');
-    }
-  }, [router, session]);
 
   return (
     <Layout>
