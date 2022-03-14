@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 import React from 'react';
+import { ImSpinner2 } from 'react-icons/im';
 
 import Button from '@/components/buttons/Button';
 import Layout from '@/components/layout/Layout';
@@ -13,7 +14,12 @@ export default function DashboardIndex() {
   if (status === 'loading') {
     return (
       <Layout>
-        <p>Loading..</p>
+        <Seo templateTitle='Dasboard' />
+
+        <div className='flex flex-col items-center space-y-3'>
+          <ImSpinner2 className='animate-spin' />
+          <p>Loading...</p>
+        </div>
       </Layout>
     );
   }
