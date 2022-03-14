@@ -2,12 +2,12 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import React from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-
-import { prisma } from '@/lib/prisma';
+import { ImSpinner2 } from 'react-icons/im';
 
 import Button from '@/components/buttons/Button';
 import Layout from '@/components/layout/Layout';
 import NextImage from '@/components/NextImage';
+import Seo from '@/components/Seo';
 
 interface User {
   id: string;
@@ -22,52 +22,60 @@ interface Post {
   author: User;
 }
 
-interface PostIndeProps {
-  posts: Post[];
-}
-
-export async function getServerSideProps() {
-  const allPosts = await prisma.post.findMany({
-    select: {
-      id: true,
-      title: true,
-      content: true,
-      author: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-        },
-      },
-    },
-  });
-
-  return {
-    props: {
-      posts: allPosts,
-    },
-  };
-}
-
-export default function PostIndex({ posts }: PostIndeProps) {
+export default function PostIndex() {
   const router = useRouter();
   const { register, handleSubmit, reset } = useForm();
   const { data: session } = useSession();
+  const [posts, setPosts] = React.useState<Post[] | null>(null);
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    await fetch('/api/post/', {
-      method: 'POST',
-      body: JSON.stringify({
-        ...data,
-        email: session?.user.email,
-        id: session?.user.id,
-      }),
+  const getPostsData = async () => {
+    const res = fetch('/api/post', {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     });
-    reset();
+    const data = await (await res).json();
+    setPosts(data);
   };
+
+  const postPostData = async (values: FieldValues) => {
+    await fetch('/api/post/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(values),
+    });
+  };
+
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    reset();
+    await postPostData({
+      ...data,
+      id: session?.user.id,
+      email: session?.user.email,
+    });
+    setPosts(null);
+    await getPostsData();
+  };
+
+  React.useEffect(() => {
+    getPostsData();
+  }, []);
+
+  if (!posts) {
+    return (
+      <Layout>
+        <Seo templateTitle='Notes' />
+
+        <div className='flex flex-col items-center space-y-3'>
+          <ImSpinner2 className='animate-spin' />
+          <p>Loading...</p>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -117,27 +125,28 @@ export default function PostIndex({ posts }: PostIndeProps) {
           </span>{' '}
           List of Posts
         </h2>
-        {posts.map((post: Post) => (
-          <div
-            key={post.id}
-            className='mt-2 space-y-2 rounded-lg border-2 border-gray-800 p-3'
-          >
-            <div className='flex items-center gap-x-2'>
-              <NextImage
-                src={post.author.image as string}
-                alt={post.author.name as string}
-                layout='fixed'
-                width={40}
-                height={40}
-                imgClassName='rounded-full'
-              />
-              <p>{post.author.name}</p>
+        {posts &&
+          posts?.map((post: Post) => (
+            <div
+              key={post.id}
+              className='mt-2 space-y-2 rounded-lg border-2 border-gray-800 p-3'
+            >
+              <div className='flex items-center gap-x-2'>
+                <NextImage
+                  src={post.author.image as string}
+                  alt={post.author.name as string}
+                  layout='fixed'
+                  width={40}
+                  height={40}
+                  imgClassName='rounded-full'
+                />
+                <p>{post.author.name}</p>
+              </div>
+              <h2>{post.title}</h2>
+              <p>{post.content}</p>
+              <p></p>
             </div>
-            <h2>{post.title}</h2>
-            <p>{post.content}</p>
-            <p></p>
-          </div>
-        ))}
+          ))}
         <Button className='mt-6' onClick={() => router.push('/dashboard')}>
           Back to dashboard
         </Button>
