@@ -4,7 +4,7 @@ import * as React from 'react';
 import clsxm from '@/lib/clsxm';
 
 type NextImageProps = (
-  | { width: string | number; height: string | number; imgClassName: string }
+  | { width: string | number; height: string | number; imgClassName?: string }
   | {
       layout: 'fill';
       width?: string | number;
