@@ -1,46 +1,34 @@
-import { NextPageContext } from 'next';
 import { useRouter } from 'next/router';
-import { getSession, signOut, useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import React from 'react';
 
 import Button from '@/components/buttons/Button';
 import Layout from '@/components/layout/Layout';
-
-export async function getServerSideProps(context: NextPageContext) {
-  const session = await getSession(context);
-
-  if (session?.user) {
-    return {
-      props: {
-        session,
-      },
-    };
-  } else {
-    return {
-      props: {},
-    };
-  }
-}
+import NextImage from '@/components/NextImage';
 
 export default function DashboardIndex() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
-  if (!session) {
-    router.push('/');
+  if (status === 'loading') {
+    return (
+      <Layout>
+        <p>Loading..</p>
+      </Layout>
+    );
   }
 
   return (
     <Layout>
       <main className='flex flex-col items-center space-y-3'>
         <div className='flex items-center gap-x-4'>
-          {/* <NextImage
+          <NextImage
             src={session?.user?.image as string}
             alt='Profile'
             layout='fixed'
             width={70}
             height={70}
             imgClassName='rounded-full'
-          /> */}
+          />
           <h2>{session?.user?.name} 🙌</h2>
         </div>
         <p>{session?.user?.email}</p>
