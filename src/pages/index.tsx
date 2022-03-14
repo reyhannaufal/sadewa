@@ -1,25 +1,35 @@
 import { NextPageContext } from 'next';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import * as React from 'react';
 
 import Button from '@/components/buttons/Button';
 import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
 
-import { isDevelopment } from '@/utils/env';
+import { CookiesType, isDevelopment } from '@/utils/env';
 
 interface HomeContext extends NextPageContext {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   req: any;
 }
 
-export async function getServerSideProps(context: HomeContext) {
-  const token =
-    context.req?.cookies[
-      isDevelopment()
-        ? 'next-auth.session-token'
-        : '__Secure-next-auth.session-token'
-    ];
+type HomeResponseProps = Promise<
+  | { props: Record<string, never> }
+  | {
+      redirect: {
+        permanent: boolean;
+        destination: string;
+      };
+    }
+>;
+
+export async function getServerSideProps(
+  context: HomeContext
+): Promise<HomeResponseProps> {
+  const cookieName = isDevelopment()
+    ? CookiesType.DEVELOPMENT
+    : CookiesType.PRODUCTION;
+  const token = context.req?.cookies[cookieName];
   if (token) {
     return {
       redirect: {
@@ -27,12 +37,14 @@ export async function getServerSideProps(context: HomeContext) {
         destination: '/dashboard',
       },
     };
+  } else {
+    return {
+      props: {},
+    };
   }
-  return {};
 }
 
 export default function HomePage() {
-  const { status } = useSession();
   return (
     <Layout>
       <Seo templateTitle='Home' />
@@ -40,12 +52,7 @@ export default function HomePage() {
       <main>
         <div className='layout flex min-h-screen w-full flex-col items-center justify-center space-y-4 text-center'>
           <h3>Please signed in ❌</h3>
-          <Button
-            isLoading={status === 'loading'}
-            onClick={() => signIn('google')}
-          >
-            Sign in
-          </Button>
+          <Button onClick={() => signIn('google')}>Sign in</Button>
         </div>
       </main>
     </Layout>

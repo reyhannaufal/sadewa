@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { isDevelopment } from '@/utils/env';
+import { CookiesType, isDevelopment } from '@/utils/env';
 
 export default function middleware(req: NextRequest) {
-  const authToken =
-    req.cookies[
-      isDevelopment()
-        ? 'next-auth.session-token'
-        : '__Secure-next-auth.session-token'
-    ];
+  const cookieName = isDevelopment()
+    ? CookiesType.DEVELOPMENT
+    : CookiesType.PRODUCTION;
+  const authToken = req.cookies[cookieName];
   if (!authToken) {
     return NextResponse.redirect(new URL('/', req.url));
   }
