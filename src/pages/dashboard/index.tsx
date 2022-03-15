@@ -1,16 +1,33 @@
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 import React from 'react';
+import { ImSpinner2 } from 'react-icons/im';
 
 import Button from '@/components/buttons/Button';
 import Layout from '@/components/layout/Layout';
 import NextImage from '@/components/NextImage';
+import Seo from '@/components/Seo';
 
 export default function DashboardIndex() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
+  if (status === 'loading') {
+    return (
+      <Layout>
+        <Seo templateTitle='Dasboard' />
+
+        <div className='flex flex-col items-center space-y-3'>
+          <ImSpinner2 className='animate-spin' />
+          <p>Loading...</p>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
+      <Seo templateTitle='Dasboard' />
+
       <main className='flex flex-col items-center space-y-3'>
         <div className='flex items-center gap-x-4'>
           <NextImage

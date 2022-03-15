@@ -1,12 +1,9 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { PrismaClient } from '@prisma/client';
 import NextAuth from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 
-const prisma = global.prisma || new PrismaClient();
-
-if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
+import { prisma } from '@/lib/prisma';
 
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
