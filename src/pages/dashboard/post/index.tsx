@@ -69,7 +69,7 @@ export default function PostIndex() {
       <Layout>
         <Seo templateTitle='Notes' />
 
-        <div className='flex flex-col items-center space-y-3'>
+        <div className='layout flex min-h-[50vh] w-full flex-col items-center justify-center space-y-4 text-center'>
           <ImSpinner2 className='animate-spin' />
           <p>Loading...</p>
         </div>
@@ -79,57 +79,54 @@ export default function PostIndex() {
 
   return (
     <Layout>
-      <div className='py-2'>
-        <div className='mt-10'>
-          <h2>Create post</h2>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className='mt-5 mb-10 space-y-4 '
-          >
-            <div className='rounded-md border border-gray-300 px-3 py-2 shadow-sm focus-within:border-indigo-600 focus-within:ring-1 focus-within:ring-indigo-600 '>
-              <label
-                htmlFor='title'
-                className='block text-xs font-medium text-gray-900'
-              >
-                Title
-              </label>
-              <input
-                type='text'
-                id='title'
-                className='block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm'
-                placeholder='Some awsesome title'
-                {...register('title')}
-              />
-            </div>
-            <div className='rounded-md border border-gray-300 px-3 py-2 shadow-sm focus-within:border-indigo-600 focus-within:ring-1 focus-within:ring-indigo-600'>
-              <label
-                htmlFor='content'
-                className='block text-xs font-medium text-gray-900'
-              >
-                Content
-              </label>
-              <input
-                type='text'
-                id='content'
-                className='block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm'
-                placeholder='Hmmm content 🤔'
-                {...register('content')}
-              />
-            </div>
-            <Button type='submit'>Submit</Button>
-          </form>
-        </div>
+      <div className=' mx-12 mt-10 flex  w-auto flex-col justify-start space-y-4'>
+        <h2>Create an awesome workspace 🤙</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className='space-y-4 '>
+          <div className='rounded-md border border-gray-300 px-3 py-2 shadow-sm focus-within:border-indigo-600 focus-within:ring-1 focus-within:ring-indigo-600 '>
+            <label
+              htmlFor='title'
+              className='block text-xs font-medium text-gray-900'
+            >
+              Title
+            </label>
+            <input
+              type='text'
+              id='title'
+              className='block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm'
+              placeholder='Some awsesome title'
+              {...register('title')}
+            />
+          </div>
+          <div className='rounded-md border border-gray-300 px-3 py-2 shadow-sm focus-within:border-indigo-600 focus-within:ring-1 focus-within:ring-indigo-600'>
+            <label
+              htmlFor='content'
+              className='block text-xs font-medium text-gray-900'
+            >
+              Content
+            </label>
+            <input
+              type='text'
+              id='content'
+              className='block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm'
+              placeholder='Hmmm content 🤔'
+              {...register('content')}
+            />
+          </div>
+          <Button type='submit'>Submit</Button>
+        </form>
+      </div>
+      <div className='mx-12 mt-10 mb-8 flex w-auto flex-col  space-y-4'>
         <h2>
           <span role='img' aria-label='waving hand'>
             👋
           </span>{' '}
-          List of Posts
+          Workspaces
         </h2>
         {posts &&
           posts?.map((post: Post) => (
             <div
               key={post.id}
-              className='mt-2 space-y-2 rounded-lg border-2 border-gray-800 p-3'
+              className='mx-auto mt-2 w-full space-y-2 rounded-lg border-2 border-gray-800 p-3'
             >
               <div className='flex items-center gap-x-2'>
                 <NextImage
@@ -147,7 +144,10 @@ export default function PostIndex() {
               <p></p>
             </div>
           ))}
-        <Button className='mt-6' onClick={() => router.push('/dashboard')}>
+        <Button
+          className='w-[11rem] justify-start'
+          onClick={() => router.push('/dashboard')}
+        >
           Back to dashboard
         </Button>
       </div>

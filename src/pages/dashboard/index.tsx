@@ -28,7 +28,7 @@ export default function DashboardIndex() {
     <Layout>
       <Seo templateTitle='Dasboard' />
 
-      <main className='flex flex-col items-center space-y-3'>
+      <main className='layout flex min-h-[50vh] w-full flex-col items-center justify-center space-y-4'>
         <div className='flex items-center gap-x-4'>
           <NextImage
             src={session?.user?.image as string}
@@ -46,7 +46,7 @@ export default function DashboardIndex() {
             Sign out
           </Button>
           <Button onClick={() => router.push('/dashboard/post')}>
-            To Post
+            To Workspace
           </Button>
         </div>
       </main>

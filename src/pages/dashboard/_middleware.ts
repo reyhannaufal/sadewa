@@ -8,6 +8,6 @@ export default function middleware(req: NextRequest, _: NextResponse) {
     : CookiesType.PRODUCTION;
   const authToken = req.cookies[cookieName];
   if (!authToken) {
-    return NextResponse.redirect(new URL('/', req.url));
+    return NextResponse.redirect(new URL('/login', req.url));
   }
 }
