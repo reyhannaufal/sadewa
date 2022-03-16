@@ -24,7 +24,12 @@ interface Post {
 
 export default function PostIndex() {
   const router = useRouter();
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
   const { data: session } = useSession();
   const [posts, setPosts] = React.useState<Post[] | null>(null);
 
@@ -94,9 +99,12 @@ export default function PostIndex() {
               id='title'
               className='block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm'
               placeholder='Some awsesome title'
-              {...register('title')}
+              {...register('title', { required: true })}
             />
           </div>
+          {errors && errors.title && (
+            <p className='text-xs text-red-600'>The field is required ❌</p>
+          )}
           <div className='rounded-md border border-gray-300 px-3 py-2 shadow-sm focus-within:border-indigo-600 focus-within:ring-1 focus-within:ring-indigo-600'>
             <label
               htmlFor='content'
@@ -109,10 +117,14 @@ export default function PostIndex() {
               id='content'
               className='block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm'
               placeholder='Hmmm content 🤔'
-              {...register('content')}
+              {...register('content', { required: true })}
             />
           </div>
+          {errors && errors.content && (
+            <p className='text-xs text-red-600'>The field is required ❌</p>
+          )}
           <Button type='submit'>Submit</Button>
+          <hr />
         </form>
       </div>
       <div className='mx-12 mt-10 mb-8 flex w-auto flex-col  space-y-4'>
@@ -122,30 +134,35 @@ export default function PostIndex() {
           </span>{' '}
           Workspaces
         </h2>
-        {posts &&
-          posts?.map((post: Post) => (
-            <div
-              key={post.id}
-              className='mx-auto mt-2 w-full space-y-2 rounded-lg border-2 border-gray-800 p-3'
-            >
-              <div className='flex items-center gap-x-2'>
-                <NextImage
-                  src={post.author.image as string}
-                  alt={post.author.name as string}
-                  layout='fixed'
-                  width={40}
-                  height={40}
-                  imgClassName='rounded-full'
-                />
-                <p>{post.author.name}</p>
+        <div className='grid grid-cols-1 lg:grid-cols-2 lg:gap-x-4'>
+          {posts &&
+            posts?.map((post: Post) => (
+              <div
+                key={post.id}
+                className='mx-auto mt-2 w-full space-y-2 rounded-lg border-2 border-gray-800 p-3'
+              >
+                <div className='flex items-center gap-x-2'>
+                  <NextImage
+                    src={post.author.image as string}
+                    alt={post.author.name as string}
+                    layout='fixed'
+                    width={40}
+                    height={40}
+                    imgClassName='rounded-full'
+                  />
+                  <div className='flex flex-col'>
+                    <p className='text-sm font-bold'>{post.author.name}</p>
+                    <p className='text-xs'>{new Date().toLocaleDateString()}</p>
+                  </div>
+                </div>
+                <h2 className='text-xl text-gray-900'>{post.title}</h2>
+                <p className='text-md text-gray-600'>{post.content}</p>
+                <p></p>
               </div>
-              <h2>{post.title}</h2>
-              <p>{post.content}</p>
-              <p></p>
-            </div>
-          ))}
+            ))}
+        </div>
         <Button
-          className='w-[11rem] justify-start'
+          className=' justify-center  lg:w-[18%]'
           onClick={() => router.push('/dashboard')}
         >
           Back to dashboard
